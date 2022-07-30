@@ -30,14 +30,14 @@ export const main = Reach.App(() => {
   })
   A.publish(value, deadline) // Alice's publish her inherit token value to the contract
      .pay(value) // Alice pays the value into the contract
-    // .timeout(relativeTime(fixedTimer), () => closeTo(Alice, informTimeout))
+    .timeout(relativeTime(deadline), () => closeTo(Alice, informTimeout))
   commit();
   // The second one to publish always attaches
   B.only(() => {
     const terms = declassify(interact.acceptTerms(value));
   })
   B.publish(terms)
-  // .timeout(relativeTime(fixedTimer), () => closeTo(Alice, informTimeout))
+  .timeout(relativeTime(deadline), () => closeTo(Alice, informTimeout))
   commit();
 
   const informTimeout = () => {
@@ -46,24 +46,22 @@ export const main = Reach.App(() => {
     });
   };
 
-  // const showTime = () => {
-    //   each([A, B], () => {
-    //     interact.showTime(COUNTDOWN);
-    //   })
-    // }
+  const showTime = () => {
+      each([A, B], () => {
+        interact.showTime(COUNTDOWN);
+      })
+    }
   
-  // console.log(`Fixed time is ${fixedTime}`);
 
   A.only(() => {
     const stillHere = declassify(interact.getChoice());
   })
   A.publish(stillHere)
-  // .timeout(relativeTime(deadline), () => closeTo(Alice, informTimeout))
+  .timeout(relativeTime(deadline), () => closeTo(Alice, informTimeout))
 
   var end = lastConsensusTime() + COUNTDOWN;
-  invariant(balance() == 2 * value && stillHere === true);
+  invariant(balance() == value && stillHere === true);
   while (lastConsensusTime() < end) {
-    // await sleep(1);
     if(stillHere) {
       transfer(value).to(A);
     } else {
@@ -71,31 +69,6 @@ export const main = Reach.App(() => {
     }
     continue
   }
-
-  // var aliceStatus = stillHere;
-  // invariant(balance() == inherit);
-  // while (aliceStatus == stillHere) {
-  //   commit()
-  //   if(stillHere) {
-  //     transfer(value).to(A);
-  //   } else {
-  //     transfer(value).to(B);
-  //   }
-  //   // commit();
-  //   // A.publish();
-  //   // fixedTime = fixedTime - 1;
-  //   continue;
-  // }
-
-  // var fixedTime = COUNTDOWN;
-  // invariant(fixedTime > 0);
-  // while (true) {
-  //   
-  //   // commit();
-  //   // A.publish();
-  //   // fixedTime = fixedTime - 1;
-  //   continue;
-  // }
  
   // write your program here
   commit();
