@@ -44,7 +44,6 @@ await Promise.all([
       `How much would you like put in the vault?`,
       stdlib.parseCurrency,
     )
-      console.log(amt)
       console.log(`Alice funded the vault with ${stdlib.formatCurrency(amt)}`);
       return amt;
     },
@@ -53,7 +52,6 @@ await Promise.all([
         'Do you still want to be here? (y/n)',	
         yesno,
       )
-      console.log(choice)
       console.log(`Alice choice is ${choiceArray[(choice === false) ? 0 : 1]}`);
       return choice;
     },
